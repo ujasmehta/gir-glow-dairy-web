@@ -9,7 +9,215 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      cows: {
+        Row: {
+          age: number | null
+          comments: string | null
+          created_at: string | null
+          father: string | null
+          gender: string | null
+          id: string
+          lactation: boolean | null
+          mother: string | null
+          name: string
+          origine: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          age?: number | null
+          comments?: string | null
+          created_at?: string | null
+          father?: string | null
+          gender?: string | null
+          id?: string
+          lactation?: boolean | null
+          mother?: string | null
+          name: string
+          origine?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          age?: number | null
+          comments?: string | null
+          created_at?: string | null
+          father?: string | null
+          gender?: string | null
+          id?: string
+          lactation?: boolean | null
+          mother?: string | null
+          name?: string
+          origine?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      customers: {
+        Row: {
+          address: string | null
+          area: string | null
+          contact_number: string | null
+          created_at: string | null
+          geopin: string | null
+          id: string
+          name: string
+          quantity: number | null
+          unit: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          area?: string | null
+          contact_number?: string | null
+          created_at?: string | null
+          geopin?: string | null
+          id?: string
+          name: string
+          quantity?: number | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          area?: string | null
+          contact_number?: string | null
+          created_at?: string | null
+          geopin?: string | null
+          id?: string
+          name?: string
+          quantity?: number | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      feed_records: {
+        Row: {
+          bajari_juvar: number | null
+          bajari_makai: number | null
+          bajari_sheradi: number | null
+          chana_bhusu: number | null
+          cow_id: string | null
+          created_at: string | null
+          deworming: string | null
+          disease: string | null
+          ghau_bhusu: number | null
+          grower_above_6_months: number | null
+          grower_below_6_months: number | null
+          id: string
+          juvar_bajari: number | null
+          kapas_khod: number | null
+          makai: number | null
+          makai_khod: number | null
+          medical_note: string | null
+          milk_output: number | null
+          readymade_feed: number | null
+          record_date: string | null
+          saileg: number | null
+          sheradi_kucha: number | null
+          tuver_bhusu: number | null
+          updated_at: string | null
+          vaccine: string | null
+          vegetable_waste: number | null
+        }
+        Insert: {
+          bajari_juvar?: number | null
+          bajari_makai?: number | null
+          bajari_sheradi?: number | null
+          chana_bhusu?: number | null
+          cow_id?: string | null
+          created_at?: string | null
+          deworming?: string | null
+          disease?: string | null
+          ghau_bhusu?: number | null
+          grower_above_6_months?: number | null
+          grower_below_6_months?: number | null
+          id?: string
+          juvar_bajari?: number | null
+          kapas_khod?: number | null
+          makai?: number | null
+          makai_khod?: number | null
+          medical_note?: string | null
+          milk_output?: number | null
+          readymade_feed?: number | null
+          record_date?: string | null
+          saileg?: number | null
+          sheradi_kucha?: number | null
+          tuver_bhusu?: number | null
+          updated_at?: string | null
+          vaccine?: string | null
+          vegetable_waste?: number | null
+        }
+        Update: {
+          bajari_juvar?: number | null
+          bajari_makai?: number | null
+          bajari_sheradi?: number | null
+          chana_bhusu?: number | null
+          cow_id?: string | null
+          created_at?: string | null
+          deworming?: string | null
+          disease?: string | null
+          ghau_bhusu?: number | null
+          grower_above_6_months?: number | null
+          grower_below_6_months?: number | null
+          id?: string
+          juvar_bajari?: number | null
+          kapas_khod?: number | null
+          makai?: number | null
+          makai_khod?: number | null
+          medical_note?: string | null
+          milk_output?: number | null
+          readymade_feed?: number | null
+          record_date?: string | null
+          saileg?: number | null
+          sheradi_kucha?: number | null
+          tuver_bhusu?: number | null
+          updated_at?: string | null
+          vaccine?: string | null
+          vegetable_waste?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_records_cow_id_fkey"
+            columns: ["cow_id"]
+            isOneToOne: false
+            referencedRelation: "cows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string | null
+          customer_name: string
+          id: string
+          item: string
+          order_date: string
+          quantity: number
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_name: string
+          id?: string
+          item: string
+          order_date: string
+          quantity: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_name?: string
+          id?: string
+          item?: string
+          order_date?: string
+          quantity?: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
