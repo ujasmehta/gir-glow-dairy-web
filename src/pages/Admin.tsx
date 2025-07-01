@@ -9,13 +9,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Milk, ArrowLeft, Users, ShoppingCart, Utensils } from "lucide-react";
+import { Milk, ArrowLeft, Users, ShoppingCart, Utensils, LogOut, User } from "lucide-react";
 import { CustomerManagement } from "@/components/admin/CustomerManagement";
 import { CowManagement } from "@/components/admin/CowManagement";
 import { OrderManagement } from "@/components/admin/OrderManagement";
 import { FeedManagement } from "@/components/admin/FeedManagement";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Admin = () => {
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+    } catch (error) {
+      toast({
+        title: "Sign Out Failed",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -31,14 +52,19 @@ const Admin = () => {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm font-medium text-gray-700">
-                Admin Portal
-              </span>
+              <div className="flex items-center space-x-2 text-sm">
+                <User className="h-4 w-4 text-gray-500" />
+                <span className="text-gray-700">{user?.email}</span>
+              </div>
               <Button variant="ghost" asChild>
                 <Link to="/">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Website
                 </Link>
+              </Button>
+              <Button variant="outline" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
               </Button>
             </div>
           </div>

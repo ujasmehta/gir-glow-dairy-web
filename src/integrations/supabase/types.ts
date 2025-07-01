@@ -9,6 +9,24 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      authorized_admins: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
       cows: {
         Row: {
           age: number | null
@@ -191,6 +209,7 @@ export type Database = {
       orders: {
         Row: {
           created_at: string | null
+          customer_id: string | null
           customer_name: string
           id: string
           item: string
@@ -201,6 +220,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          customer_id?: string | null
           customer_name: string
           id?: string
           item: string
@@ -211,12 +231,48 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          customer_id?: string | null
           customer_name?: string
           id?: string
           item?: string
           order_date?: string
           quantity?: number
           status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -226,7 +282,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_authorized_admin: {
+        Args: { user_email: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
