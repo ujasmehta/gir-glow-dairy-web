@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Milk, ArrowLeft, Users, Cow, ShoppingCart, Utensils } from "lucide-react";
+import { Milk, ArrowLeft, Users, ShoppingCart, Utensils } from "lucide-react";
 import { CustomerManagement } from "@/components/admin/CustomerManagement";
 import { CowManagement } from "@/components/admin/CowManagement";
 import { OrderManagement } from "@/components/admin/OrderManagement";
@@ -49,7 +49,7 @@ const Admin = () => {
               <span>Customers</span>
             </TabsTrigger>
             <TabsTrigger value="cows" className="flex items-center space-x-2">
-              <Cow className="h-4 w-4" />
+              <Users className="h-4 w-4" />
               <span>Cows</span>
             </TabsTrigger>
             <TabsTrigger value="orders" className="flex items-center space-x-2">
