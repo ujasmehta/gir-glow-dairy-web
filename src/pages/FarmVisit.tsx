@@ -38,35 +38,33 @@ const FarmVisit = () => {
   const visitPlans = [
     {
       name: "Individual Visit",
-      price: "₹200 per person",
+      price: "Complementry",
       duration: "2 hours",
       includes: [
         "Farm tour",
         "Cow interaction",
-        "Fresh milk tasting",
         "Photo opportunities",
       ],
     },
     {
       name: "Family Package",
-      price: "₹600 for family of 4",
-      duration: "3 hours",
+      price: "Complementry",
+      duration: "1 hours",
       includes: [
         "Extended farm tour",
         "Milking experience",
-        "Fresh snacks",
-        "Take-home milk",
+        "Fresh snacks- on Purchase",
+        "Take-home milk - On Purchase",
         "Family photos",
       ],
     },
     {
       name: "School Groups",
-      price: "₹150 per student",
-      duration: "4 hours",
+      price: "Complementry",
+      duration: "3 hours",
       includes: [
         "Educational tour",
         "Interactive sessions",
-        "Lunch",
         "Learning materials",
         "Certificate",
       ],
@@ -249,7 +247,7 @@ const FarmVisit = () => {
               <h3 className="font-semibold text-gray-900 mb-3">Contact</h3>
               <ul className="space-y-2 text-gray-600">
                 <li>Phone: +91 99795 40446</li>
-                <li>Email: support@ramdairyfarm.com</li>
+                <li>Email: support@ramdairyfarm.in</li>
                 <li>WhatsApp: +91 99795 40446</li>
               </ul>
 
