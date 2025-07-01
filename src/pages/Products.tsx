@@ -16,7 +16,7 @@ const Products = () => {
     {
       id: 2,
       name: "A2 Ghee",
-      price: "₹1,200/kg",
+      price: "₹3000/kg",
       description: "Traditional ghee made from A2 milk, rich in flavor and nutrition",
       image: "https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
     },
