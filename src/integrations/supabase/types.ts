@@ -18,6 +18,7 @@ export type Database = {
           gender: string | null
           id: string
           lactation: boolean | null
+          lactationday: string | null
           mother: string | null
           name: string
           origine: string | null
@@ -31,6 +32,7 @@ export type Database = {
           gender?: string | null
           id?: string
           lactation?: boolean | null
+          lactationday?: string | null
           mother?: string | null
           name: string
           origine?: string | null
@@ -44,6 +46,7 @@ export type Database = {
           gender?: string | null
           id?: string
           lactation?: boolean | null
+          lactationday?: string | null
           mother?: string | null
           name?: string
           origine?: string | null
