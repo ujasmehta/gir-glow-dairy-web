@@ -1,14 +1,38 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -19,6 +43,7 @@ interface Cow {
   gender: string | null;
   age: number | null;
   lactation: boolean;
+  lactationday: string;
   mother: string | null;
   father: string | null;
   origine: string | null;
@@ -34,10 +59,11 @@ export const CowManagement = () => {
     gender: "",
     age: "",
     lactation: false,
+    lactationday: "",
     mother: "",
     father: "",
     origine: "",
-    comments: ""
+    comments: "",
   });
   const { toast } = useToast();
 
@@ -47,9 +73,9 @@ export const CowManagement = () => {
 
   const fetchCows = async () => {
     const { data, error } = await supabase
-      .from('cows')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("cows")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
       toast({
@@ -64,12 +90,13 @@ export const CowManagement = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const cowData = {
       name: formData.name,
       gender: formData.gender || null,
       age: formData.age ? parseInt(formData.age) : null,
       lactation: formData.lactation,
+      lactationday: formData.lactationday || "",
       mother: formData.mother || null,
       father: formData.father || null,
       origine: formData.origine || null,
@@ -78,9 +105,9 @@ export const CowManagement = () => {
 
     if (editingCow) {
       const { error } = await supabase
-        .from('cows')
+        .from("cows")
         .update(cowData)
-        .eq('id', editingCow.id);
+        .eq("id", editingCow.id);
 
       if (error) {
         toast({
@@ -97,9 +124,7 @@ export const CowManagement = () => {
         fetchCows();
       }
     } else {
-      const { error } = await supabase
-        .from('cows')
-        .insert([cowData]);
+      const { error } = await supabase.from("cows").insert([cowData]);
 
       if (error) {
         toast({
@@ -122,10 +147,11 @@ export const CowManagement = () => {
       gender: "",
       age: "",
       lactation: false,
+      lactationday: "",
       mother: "",
       father: "",
       origine: "",
-      comments: ""
+      comments: "",
     });
   };
 
@@ -136,18 +162,16 @@ export const CowManagement = () => {
       gender: cow.gender || "",
       age: cow.age?.toString() || "",
       lactation: cow.lactation,
+      lactationday: cow.lactationday || "",
       mother: cow.mother || "",
       father: cow.father || "",
       origine: cow.origine || "",
-      comments: cow.comments || ""
+      comments: cow.comments || "",
     });
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase
-      .from('cows')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from("cows").delete().eq("id", id);
 
     if (error) {
       toast({
@@ -189,14 +213,21 @@ export const CowManagement = () => {
                   <Input
                     id="name"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     required
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="gender">Gender</Label>
-                    <Select value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })}>
+                    <Select
+                      value={formData.gender}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, gender: value })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
@@ -212,7 +243,9 @@ export const CowManagement = () => {
                       id="age"
                       type="number"
                       value={formData.age}
-                      onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, age: e.target.value })
+                      }
                     />
                   </div>
                 </div>
@@ -220,7 +253,9 @@ export const CowManagement = () => {
                   <Switch
                     id="lactation"
                     checked={formData.lactation}
-                    onCheckedChange={(checked) => setFormData({ ...formData, lactation: checked })}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, lactation: checked })
+                    }
                   />
                   <Label htmlFor="lactation">Lactating</Label>
                 </div>
@@ -230,7 +265,22 @@ export const CowManagement = () => {
                     <Input
                       id="mother"
                       value={formData.mother}
-                      onChange={(e) => setFormData({ ...formData, mother: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, mother: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="lactationday">LactationDay</Label>
+                    <Input
+                      id="lactationday"
+                      value={formData.lactationday}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          lactationday: e.target.value,
+                        })
+                      }
                     />
                   </div>
                   <div>
@@ -238,7 +288,9 @@ export const CowManagement = () => {
                     <Input
                       id="father"
                       value={formData.father}
-                      onChange={(e) => setFormData({ ...formData, father: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, father: e.target.value })
+                      }
                     />
                   </div>
                 </div>
@@ -247,7 +299,9 @@ export const CowManagement = () => {
                   <Input
                     id="origine"
                     value={formData.origine}
-                    onChange={(e) => setFormData({ ...formData, origine: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, origine: e.target.value })
+                    }
                   />
                 </div>
                 <div>
@@ -255,10 +309,14 @@ export const CowManagement = () => {
                   <Textarea
                     id="comments"
                     value={formData.comments}
-                    onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, comments: e.target.value })
+                    }
                   />
                 </div>
-                <Button type="submit" className="w-full">Add Cow</Button>
+                <Button type="submit" className="w-full">
+                  Add Cow
+                </Button>
               </form>
             </DialogContent>
           </Dialog>
@@ -272,6 +330,7 @@ export const CowManagement = () => {
               <TableHead>Gender</TableHead>
               <TableHead>Age (months)</TableHead>
               <TableHead>Lactating</TableHead>
+              <TableHead>LactationDay</TableHead>
               <TableHead>Origin</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -280,10 +339,11 @@ export const CowManagement = () => {
             {cows.map((cow) => (
               <TableRow key={cow.id}>
                 <TableCell className="font-medium">{cow.name}</TableCell>
-                <TableCell>{cow.gender || 'N/A'}</TableCell>
-                <TableCell>{cow.age || 'N/A'}</TableCell>
-                <TableCell>{cow.lactation ? 'Yes' : 'No'}</TableCell>
-                <TableCell>{cow.origine || 'N/A'}</TableCell>
+                <TableCell>{cow.gender || "N/A"}</TableCell>
+                <TableCell>{cow.age || "N/A"}</TableCell>
+                <TableCell>{cow.lactation ? "Yes" : "No"}</TableCell>
+                <TableCell>{cow.lactationday || "N/A"}</TableCell>
+                <TableCell>{cow.origine || "N/A"}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     <Button
@@ -320,14 +380,21 @@ export const CowManagement = () => {
                 <Input
                   id="edit-name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   required
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="edit-gender">Gender</Label>
-                  <Select value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })}>
+                  <Select
+                    value={formData.gender}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, gender: value })
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
@@ -343,7 +410,9 @@ export const CowManagement = () => {
                     id="edit-age"
                     type="number"
                     value={formData.age}
-                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, age: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -351,9 +420,21 @@ export const CowManagement = () => {
                 <Switch
                   id="edit-lactation"
                   checked={formData.lactation}
-                  onCheckedChange={(checked) => setFormData({ ...formData, lactation: checked })}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, lactation: checked })
+                  }
                 />
                 <Label htmlFor="edit-lactation">Lactating</Label>
+              </div>
+              <div>
+                <Label htmlFor="edit-mother">LactationDay</Label>
+                <Input
+                  id="edit-mother"
+                  value={formData.lactationday}
+                  onChange={(e) =>
+                    setFormData({ ...formData, lactationday: e.target.value })
+                  }
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -361,7 +442,9 @@ export const CowManagement = () => {
                   <Input
                     id="edit-mother"
                     value={formData.mother}
-                    onChange={(e) => setFormData({ ...formData, mother: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, mother: e.target.value })
+                    }
                   />
                 </div>
                 <div>
@@ -369,7 +452,9 @@ export const CowManagement = () => {
                   <Input
                     id="edit-father"
                     value={formData.father}
-                    onChange={(e) => setFormData({ ...formData, father: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, father: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -378,7 +463,9 @@ export const CowManagement = () => {
                 <Input
                   id="edit-origine"
                   value={formData.origine}
-                  onChange={(e) => setFormData({ ...formData, origine: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, origine: e.target.value })
+                  }
                 />
               </div>
               <div>
@@ -386,10 +473,14 @@ export const CowManagement = () => {
                 <Textarea
                   id="edit-comments"
                   value={formData.comments}
-                  onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, comments: e.target.value })
+                  }
                 />
               </div>
-              <Button type="submit" className="w-full">Update Cow</Button>
+              <Button type="submit" className="w-full">
+                Update Cow
+              </Button>
             </form>
           </DialogContent>
         </Dialog>
