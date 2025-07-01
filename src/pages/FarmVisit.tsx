@@ -1,7 +1,12 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Milk, ArrowLeft, Clock, MapPin, Users, Calendar } from "lucide-react";
 
 const FarmVisit = () => {
@@ -9,23 +14,25 @@ const FarmVisit = () => {
     {
       icon: Users,
       title: "Meet Our Gir Cows",
-      description: "Get up close with our sacred Gir cows and learn about their care"
+      description:
+        "Get up close with our sacred Gir cows and learn about their care",
     },
     {
       icon: Clock,
       title: "Milking Experience",
-      description: "Witness the traditional milking process and learn about A2 milk"
+      description:
+        "Witness the traditional milking process and learn about A2 milk",
     },
     {
       icon: MapPin,
       title: "Farm Tour",
-      description: "Explore our organic farm and sustainable farming practices"
+      description: "Explore our organic farm and sustainable farming practices",
     },
     {
       icon: Calendar,
       title: "Educational Programs",
-      description: "Learn about dairy farming, cow care, and milk processing"
-    }
+      description: "Learn about dairy farming, cow care, and milk processing",
+    },
   ];
 
   const visitPlans = [
@@ -33,20 +40,37 @@ const FarmVisit = () => {
       name: "Individual Visit",
       price: "₹200 per person",
       duration: "2 hours",
-      includes: ["Farm tour", "Cow interaction", "Fresh milk tasting", "Photo opportunities"]
+      includes: [
+        "Farm tour",
+        "Cow interaction",
+        "Fresh milk tasting",
+        "Photo opportunities",
+      ],
     },
     {
       name: "Family Package",
       price: "₹600 for family of 4",
       duration: "3 hours",
-      includes: ["Extended farm tour", "Milking experience", "Fresh snacks", "Take-home milk", "Family photos"]
+      includes: [
+        "Extended farm tour",
+        "Milking experience",
+        "Fresh snacks",
+        "Take-home milk",
+        "Family photos",
+      ],
     },
     {
       name: "School Groups",
       price: "₹150 per student",
       duration: "4 hours",
-      includes: ["Educational tour", "Interactive sessions", "Lunch", "Learning materials", "Certificate"]
-    }
+      includes: [
+        "Educational tour",
+        "Interactive sessions",
+        "Lunch",
+        "Learning materials",
+        "Certificate",
+      ],
+    },
   ];
 
   return (
@@ -58,15 +82,39 @@ const FarmVisit = () => {
             <div className="flex items-center space-x-2">
               <Link to="/" className="flex items-center space-x-2">
                 <Milk className="h-8 w-8 text-green-600" />
-                <span className="text-2xl font-bold text-green-800">Ram Dairy Farm</span>
+                <span className="text-2xl font-bold text-green-800">
+                  Ram Dairy Farm
+                </span>
               </Link>
             </div>
             <div className="hidden md:flex space-x-8">
-              <Link to="/" className="text-gray-700 hover:text-green-600 font-medium">Home</Link>
-              <Link to="/products" className="text-gray-700 hover:text-green-600 font-medium">Products</Link>
-              <Link to="/farm-visit" className="text-green-600 font-medium">Farm Visit</Link>
-              <Link to="/blogs" className="text-gray-700 hover:text-green-600 font-medium">Blogs</Link>
-              <Link to="/order" className="text-gray-700 hover:text-green-600 font-medium">Order</Link>
+              <Link
+                to="/"
+                className="text-gray-700 hover:text-green-600 font-medium"
+              >
+                Home
+              </Link>
+              <Link
+                to="/products"
+                className="text-gray-700 hover:text-green-600 font-medium"
+              >
+                Products
+              </Link>
+              <Link to="/farm-visit" className="text-green-600 font-medium">
+                Farm Visit
+              </Link>
+              <Link
+                to="/blogs"
+                className="text-gray-700 hover:text-green-600 font-medium"
+              >
+                Blogs
+              </Link>
+              <Link
+                to="/order"
+                className="text-gray-700 hover:text-green-600 font-medium"
+              >
+                Order
+              </Link>
             </div>
           </div>
         </div>
@@ -84,25 +132,30 @@ const FarmVisit = () => {
 
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Visit Ram Dairy Farm</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Visit Ram Dairy Farm
+          </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Experience authentic dairy farming and meet our sacred Gir cows. 
-            Perfect for families, students, and anyone interested in sustainable agriculture.
+            Experience authentic dairy farming and meet our sacred Gir cows.
+            Perfect for families, students, and anyone interested in sustainable
+            agriculture.
           </p>
         </div>
 
         {/* Farm Image */}
         <div className="mb-12">
-          <img 
-            src="https://images.unsplash.com/photo-1517022812141-23620dba5c23?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-            alt="Ram Dairy Farm" 
+          <img
+            src="https://images.unsplash.com/photo-1517022812141-23620dba5c23?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+            alt="Ram Dairy Farm"
             className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
           />
         </div>
 
         {/* Visit Highlights */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">What You'll Experience</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+            What You'll Experience
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {visitHighlights.map((highlight, index) => (
               <Card key={index} className="text-center">
@@ -120,7 +173,9 @@ const FarmVisit = () => {
 
         {/* Visit Plans */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Visit Plans</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+            Visit Plans
+          </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {visitPlans.map((plan, index) => (
               <Card key={index} className="relative">
@@ -137,7 +192,10 @@ const FarmVisit = () => {
                   <h4 className="font-semibold mb-3">Includes:</h4>
                   <ul className="space-y-2 mb-6">
                     {plan.includes.map((item, i) => (
-                      <li key={i} className="text-sm text-gray-600 flex items-center">
+                      <li
+                        key={i}
+                        className="text-sm text-gray-600 flex items-center"
+                      >
                         <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                         {item}
                       </li>
@@ -154,7 +212,9 @@ const FarmVisit = () => {
 
         {/* Visit Information */}
         <div className="bg-white rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Visit Information</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            Visit Information
+          </h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h3 className="font-semibold text-gray-900 mb-3">Timings</h3>
@@ -164,8 +224,10 @@ const FarmVisit = () => {
                 <li>Morning milking: 6:00 AM - 8:00 AM</li>
                 <li>Evening milking: 5:00 PM - 7:00 PM</li>
               </ul>
-              
-              <h3 className="font-semibold text-gray-900 mb-3">What to Bring</h3>
+
+              <h3 className="font-semibold text-gray-900 mb-3">
+                What to Bring
+              </h3>
               <ul className="space-y-2 text-gray-600">
                 <li>• Comfortable walking shoes</li>
                 <li>• Hat and sunscreen</li>
@@ -173,24 +235,26 @@ const FarmVisit = () => {
                 <li>• Water bottle</li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="font-semibold text-gray-900 mb-3">Location</h3>
               <p className="text-gray-600 mb-4">
-                Ram Dairy Farm<br />
-                Village Rampur, Gir Somnath District<br />
-                Gujarat, India - 362001
+                Ram Dairy Farm
+                <br />
+                Village Rampur, Vadodara
+                <br />
+                Gujarat, India - 393265
               </p>
-              
+
               <h3 className="font-semibold text-gray-900 mb-3">Contact</h3>
               <ul className="space-y-2 text-gray-600">
-                <li>Phone: +91 98765 43210</li>
-                <li>Email: visit@ramdairyfarm.com</li>
-                <li>WhatsApp: +91 98765 43210</li>
+                <li>Phone: +91 99795 40446</li>
+                <li>Email: support@ramdairyfarm.com</li>
+                <li>WhatsApp: +91 99795 40446</li>
               </ul>
-              
+
               <Button className="mt-4 bg-green-600 hover:bg-green-700">
-                Get Directions
+                Get Directions - Coming Soon
               </Button>
             </div>
           </div>
