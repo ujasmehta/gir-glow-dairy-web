@@ -1,4 +1,6 @@
+
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,6 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
   Milk,
   Heart,
   Leaf,
@@ -16,10 +25,21 @@ import {
   Phone,
   Mail,
   MapPin,
+  Menu,
 } from "lucide-react";
 import { HeroBanner } from "@/components/HeroBanner";
 
 const Index = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navigationLinks = [
+    { to: "/", label: "Home" },
+    { to: "/products", label: "Products" },
+    { to: "/farm-visit", label: "Farm Visit" },
+    { to: "/blogs", label: "Blogs" },
+    { to: "/order", label: "Order" },
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -32,34 +52,58 @@ const Index = () => {
                 Ram Dairy Farm
               </span>
             </div>
+            
+            {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8">
-              <Link to="/" className="text-green-600 font-medium">
-                Home
-              </Link>
-              <Link
-                to="/products"
-                className="text-gray-700 hover:text-green-600 font-medium"
-              >
-                Products
-              </Link>
-              <Link
-                to="/farm-visit"
-                className="text-gray-700 hover:text-green-600 font-medium"
-              >
-                Farm Visit
-              </Link>
-              <Link
-                to="/blogs"
-                className="text-gray-700 hover:text-green-600 font-medium"
-              >
-                Blogs
-              </Link>
-              <Link
-                to="/order"
-                className="text-gray-700 hover:text-green-600 font-medium"
-              >
-                Order
-              </Link>
+              {navigationLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`font-medium ${
+                    link.to === "/"
+                      ? "text-green-600"
+                      : "text-gray-700 hover:text-green-600"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Mobile Menu */}
+            <div className="md:hidden">
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-green-600">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-64">
+                  <SheetHeader>
+                    <SheetTitle className="flex items-center space-x-2 text-green-800">
+                      <Milk className="h-6 w-6 text-green-600" />
+                      <span>Ram Dairy Farm</span>
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col space-y-4 mt-8">
+                    {navigationLinks.map((link) => (
+                      <Link
+                        key={link.to}
+                        to={link.to}
+                        className={`text-left px-4 py-2 rounded-md font-medium transition-colors ${
+                          link.to === "/"
+                            ? "bg-green-100 text-green-600"
+                            : "text-gray-700 hover:bg-green-50 hover:text-green-600"
+                        }`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>
