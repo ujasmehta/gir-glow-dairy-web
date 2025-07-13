@@ -245,8 +245,6 @@ export const CustomerManagement = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead>Unit</TableHead>
               <TableHead>Contact</TableHead>
               <TableHead>Area</TableHead>
               <TableHead>Address</TableHead>
@@ -258,8 +256,6 @@ export const CustomerManagement = () => {
             {customers.map((customer) => (
               <TableRow key={customer.id}>
                 <TableCell className="font-medium">{customer.name}</TableCell>
-                <TableCell>{customer.quantity || '-'}</TableCell>
-                <TableCell>{customer.unit || '-'}</TableCell>
                 <TableCell>{customer.contact_number || '-'}</TableCell>
                 <TableCell>{customer.area || '-'}</TableCell>
                 <TableCell>{customer.address || '-'}</TableCell>
