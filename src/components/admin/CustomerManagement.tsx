@@ -45,8 +45,8 @@ export const CustomerManagement = () => {
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [formData, setFormData] = useState({
     name: "",
-    quantity: "",
-    unit: "",
+   // quantity: "",
+   // unit: "",
     contact_number: "",
     area: "",
     address: "",
