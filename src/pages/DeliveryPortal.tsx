@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,8 +7,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +34,8 @@ interface Order {
   status: string;
   item: string;
   quantity: number;
+  customer_geopin: string;
+  customer_address: string;
 }
 
 export default function DeliveryPortal() {
@@ -30,7 +44,7 @@ export default function DeliveryPortal() {
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     fetchTodaysOrders();
@@ -39,10 +53,10 @@ export default function DeliveryPortal() {
   const fetchTodaysOrders = async () => {
     try {
       const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('order_date', today)
-        .order('created_at', { ascending: false });
+        .from("orders")
+        .select("*")
+        .eq("order_date", today)
+        .order("created_at", { ascending: false });
 
       if (error) {
         toast({
@@ -54,7 +68,7 @@ export default function DeliveryPortal() {
         setOrders(data || []);
       }
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error("Error fetching orders:", error);
     } finally {
       setLoading(false);
     }
@@ -62,12 +76,12 @@ export default function DeliveryPortal() {
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     setUpdatingOrder(orderId);
-    
+
     try {
       const { error } = await supabase
-        .from('orders')
+        .from("orders")
         .update({ status: newStatus })
-        .eq('id', orderId);
+        .eq("id", orderId);
 
       if (error) {
         toast({
@@ -80,16 +94,16 @@ export default function DeliveryPortal() {
           title: "Success",
           description: "Order status updated successfully",
         });
-        
+
         // Update local state
-        setOrders(orders.map(order => 
-          order.id === orderId 
-            ? { ...order, status: newStatus }
-            : order
-        ));
+        setOrders(
+          orders.map((order) =>
+            order.id === orderId ? { ...order, status: newStatus } : order
+          )
+        );
       }
     } catch (error) {
-      console.error('Error updating order:', error);
+      console.error("Error updating order:", error);
     } finally {
       setUpdatingOrder(null);
     }
@@ -97,27 +111,27 @@ export default function DeliveryPortal() {
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case 'completed':
-        return 'default';
-      case 'processing':
-        return 'secondary';
-      case 'cancelled':
-        return 'destructive';
+      case "completed":
+        return "default";
+      case "processing":
+        return "secondary";
+      case "cancelled":
+        return "destructive";
       default:
-        return 'outline';
+        return "outline";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed':
-        return 'text-green-600';
-      case 'processing':
-        return 'text-blue-600';
-      case 'cancelled':
-        return 'text-red-600';
+      case "completed":
+        return "text-green-600";
+      case "processing":
+        return "text-blue-600";
+      case "cancelled":
+        return "text-red-600";
       default:
-        return 'text-yellow-600';
+        return "text-yellow-600";
     }
   };
 
@@ -141,8 +155,12 @@ export default function DeliveryPortal() {
             <div className="flex items-center space-x-3">
               <Truck className="h-8 w-8 text-green-600" />
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Delivery Portal</h1>
-                <p className="text-sm text-gray-500">Today's Orders - {new Date().toLocaleDateString()}</p>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Delivery Portal
+                </h1>
+                <p className="text-sm text-gray-500">
+                  Today's Orders - {new Date().toLocaleDateString()}
+                </p>
               </div>
             </div>
           </div>
@@ -157,13 +175,17 @@ export default function DeliveryPortal() {
               <div className="flex items-center">
                 <Package className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                  <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Total Orders
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {orders.length}
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -173,7 +195,7 @@ export default function DeliveryPortal() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Pending</p>
                   <p className="text-2xl font-bold text-yellow-600">
-                    {orders.filter(o => o.status === 'pending').length}
+                    {orders.filter((o) => o.status === "pending").length}
                   </p>
                 </div>
               </div>
@@ -187,9 +209,11 @@ export default function DeliveryPortal() {
                   <div className="h-4 w-4 bg-blue-600 rounded-full"></div>
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Processing</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Processing
+                  </p>
                   <p className="text-2xl font-bold text-blue-600">
-                    {orders.filter(o => o.status === 'processing').length}
+                    {orders.filter((o) => o.status === "processing").length}
                   </p>
                 </div>
               </div>
@@ -205,7 +229,7 @@ export default function DeliveryPortal() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Completed</p>
                   <p className="text-2xl font-bold text-green-600">
-                    {orders.filter(o => o.status === 'completed').length}
+                    {orders.filter((o) => o.status === "completed").length}
                   </p>
                 </div>
               </div>
@@ -218,15 +242,20 @@ export default function DeliveryPortal() {
           <CardHeader>
             <CardTitle>Today's Delivery Orders</CardTitle>
             <CardDescription>
-              Update order status as you complete deliveries. All other details are read-only.
+              Update order status as you complete deliveries. All other details
+              are read-only.
             </CardDescription>
           </CardHeader>
           <CardContent>
             {orders.length === 0 ? (
               <div className="text-center py-12">
                 <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No orders for today</h3>
-                <p className="text-gray-500">There are no orders scheduled for delivery today.</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No orders for today
+                </h3>
+                <p className="text-gray-500">
+                  There are no orders scheduled for delivery today.
+                </p>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -236,6 +265,8 @@ export default function DeliveryPortal() {
                       <TableHead>Customer</TableHead>
                       <TableHead>Item</TableHead>
                       <TableHead>Quantity</TableHead>
+                      <TableHead>Customer Address</TableHead>
+                      <TableHead>Customer GeoPin</TableHead>
                       <TableHead>Current Status</TableHead>
                       <TableHead>Update Status</TableHead>
                     </TableRow>
@@ -243,20 +274,27 @@ export default function DeliveryPortal() {
                   <TableBody>
                     {orders.map((order) => (
                       <TableRow key={order.id}>
-                        <TableCell className="font-medium">{order.customer_name}</TableCell>
+                        <TableCell className="font-medium">
+                          {order.customer_name}
+                        </TableCell>
                         <TableCell>{order.item}</TableCell>
                         <TableCell>{order.quantity}</TableCell>
+                        <TableCell>{order.customer_geopin}</TableCell>
+                        <TableCell>{order.customer_address}</TableCell>
                         <TableCell>
                           <Badge variant={getStatusBadgeVariant(order.status)}>
                             <span className={getStatusColor(order.status)}>
-                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                              {order.status.charAt(0).toUpperCase() +
+                                order.status.slice(1)}
                             </span>
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <Select
                             value={order.status}
-                            onValueChange={(value) => updateOrderStatus(order.id, value)}
+                            onValueChange={(value) =>
+                              updateOrderStatus(order.id, value)
+                            }
                             disabled={updatingOrder === order.id}
                           >
                             <SelectTrigger className="w-32">
@@ -264,9 +302,15 @@ export default function DeliveryPortal() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="pending">Pending</SelectItem>
-                              <SelectItem value="processing">Processing</SelectItem>
-                              <SelectItem value="completed">Completed</SelectItem>
-                              <SelectItem value="cancelled">Cancelled</SelectItem>
+                              <SelectItem value="processing">
+                                Processing
+                              </SelectItem>
+                              <SelectItem value="completed">
+                                Completed
+                              </SelectItem>
+                              <SelectItem value="cancelled">
+                                Cancelled
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </TableCell>
