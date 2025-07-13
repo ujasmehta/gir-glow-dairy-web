@@ -13,6 +13,7 @@ import Blogs from "./pages/Blogs";
 import Order from "./pages/Order";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
+import DeliveryPortal from "./pages/DeliveryPortal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/farm-visit" element={<FarmVisit />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/order" element={<Order />} />
+            <Route path="/delivery" element={<DeliveryPortal />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={
               <ProtectedRoute>
