@@ -9,11 +9,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Milk, ArrowLeft, Users, ShoppingCart, Utensils, LogOut, User } from "lucide-react";
+import { Milk, ArrowLeft, Users, ShoppingCart, Utensils, LogOut, User, Calendar } from "lucide-react";
 import { CustomerManagement } from "@/components/admin/CustomerManagement";
 import { CowManagement } from "@/components/admin/CowManagement";
 import { OrderManagement } from "@/components/admin/OrderManagement";
 import { FeedManagement } from "@/components/admin/FeedManagement";
+import { WeeklyOrderManagement } from "@/components/admin/WeeklyOrderManagement";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -80,7 +81,7 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="customers" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger
               value="customers"
               className="flex items-center space-x-2"
@@ -95,6 +96,10 @@ const Admin = () => {
             <TabsTrigger value="orders" className="flex items-center space-x-2">
               <ShoppingCart className="h-4 w-4" />
               <span>Orders</span>
+            </TabsTrigger>
+            <TabsTrigger value="weekly-orders" className="flex items-center space-x-2">
+              <Calendar className="h-4 w-4" />
+              <span>Weekly Orders</span>
             </TabsTrigger>
             <TabsTrigger value="feed" className="flex items-center space-x-2">
               <Utensils className="h-4 w-4" />
@@ -112,6 +117,10 @@ const Admin = () => {
 
           <TabsContent value="orders">
             <OrderManagement />
+          </TabsContent>
+
+          <TabsContent value="weekly-orders">
+            <WeeklyOrderManagement />
           </TabsContent>
 
           <TabsContent value="feed">
