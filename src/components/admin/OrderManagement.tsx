@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, Search, ArrowUpDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -25,6 +24,9 @@ export const OrderManagement = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<"customer_name" | "order_date" | "status">("order_date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [formData, setFormData] = useState({
     customer_name: "",
     order_date: "",
@@ -52,6 +54,35 @@ export const OrderManagement = () => {
       });
     } else {
       setOrders(data || []);
+    }
+  };
+
+  // Filter and sort orders
+  const filteredAndSortedOrders = useMemo(() => {
+    let filtered = orders.filter(order =>
+      order.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    filtered.sort((a, b) => {
+      const aValue = a[sortBy];
+      const bValue = b[sortBy];
+      
+      if (sortOrder === "asc") {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+
+    return filtered;
+  }, [orders, searchTerm, sortBy, sortOrder]);
+
+  const handleSort = (column: "customer_name" | "order_date" | "status") => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setSortOrder("asc");
     }
   };
 
@@ -238,21 +269,75 @@ export const OrderManagement = () => {
             </DialogContent>
           </Dialog>
         </div>
+        
+        {/* Search and Filter Controls */}
+        <div className="flex gap-4 items-center mt-4">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by customer name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-8"
+            />
+          </div>
+          <Select value={sortBy} onValueChange={(value: "customer_name" | "order_date" | "status") => setSortBy(value)}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="customer_name">Customer Name</SelectItem>
+              <SelectItem value="order_date">Order Date</SelectItem>
+              <SelectItem value="status">Status</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+          >
+            <ArrowUpDown className="h-4 w-4 mr-2" />
+            {sortOrder === "asc" ? "Ascending" : "Descending"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Customer</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead 
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => handleSort("customer_name")}
+              >
+                Customer
+                {sortBy === "customer_name" && (
+                  <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                )}
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => handleSort("order_date")}
+              >
+                Date
+                {sortBy === "order_date" && (
+                  <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                )}
+              </TableHead>
+              <TableHead 
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => handleSort("status")}
+              >
+                Status
+                {sortBy === "status" && (
+                  <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                )}
+              </TableHead>
               <TableHead>Item</TableHead>
               <TableHead>Quantity</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.map((order) => (
+            {filteredAndSortedOrders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.customer_name}</TableCell>
                 <TableCell>{new Date(order.order_date).toLocaleDateString()}</TableCell>

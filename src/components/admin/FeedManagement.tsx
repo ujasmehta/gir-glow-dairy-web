@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, Search, ArrowUpDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -49,6 +49,10 @@ export const FeedManagement = () => {
   const [cows, setCows] = useState<Cow[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<FeedRecord | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterByCow, setFilterByCow] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<"cow_name" | "record_date" | "milk_output">("record_date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [formData, setFormData] = useState({
     cow_id: "",
     vaccine: "",
@@ -112,6 +116,65 @@ export const FeedManagement = () => {
       });
     } else {
       setCows(data || []);
+    }
+  };
+
+  // Filter and sort feed records
+  const filteredAndSortedRecords = useMemo(() => {
+    let filtered = feedRecords;
+
+    // Filter by cow name search
+    if (searchTerm) {
+      filtered = filtered.filter(record => {
+        const cowName = getCowName(record.cow_id);
+        return cowName.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    }
+
+    // Filter by specific cow
+    if (filterByCow !== "all") {
+      filtered = filtered.filter(record => record.cow_id === filterByCow);
+    }
+
+    // Sort records
+    filtered.sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      switch (sortBy) {
+        case "cow_name":
+          aValue = getCowName(a.cow_id);
+          bValue = getCowName(b.cow_id);
+          break;
+        case "record_date":
+          aValue = a.record_date;
+          bValue = b.record_date;
+          break;
+        case "milk_output":
+          aValue = a.milk_output || 0;
+          bValue = b.milk_output || 0;
+          break;
+        default:
+          aValue = a.record_date;
+          bValue = b.record_date;
+      }
+      
+      if (sortOrder === "asc") {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+
+    return filtered;
+  }, [feedRecords, searchTerm, filterByCow, sortBy, sortOrder, cows]);
+
+  const handleSort = (column: "cow_name" | "record_date" | "milk_output") => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setSortOrder("asc");
     }
   };
 
@@ -552,21 +615,88 @@ export const FeedManagement = () => {
             </DialogContent>
           </Dialog>
         </div>
+        
+        {/* Search and Filter Controls */}
+        <div className="flex gap-4 items-center mt-4">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by cow name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-8"
+            />
+          </div>
+          <Select value={filterByCow} onValueChange={setFilterByCow}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filter by cow" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Cows</SelectItem>
+              {cows.map((cow) => (
+                <SelectItem key={cow.id} value={cow.id}>
+                  {cow.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={sortBy} onValueChange={(value: "cow_name" | "record_date" | "milk_output") => setSortBy(value)}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="cow_name">Cow Name</SelectItem>
+              <SelectItem value="record_date">Record Date</SelectItem>
+              <SelectItem value="milk_output">Milk Output</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+          >
+            <ArrowUpDown className="h-4 w-4 mr-2" />
+            {sortOrder === "asc" ? "Ascending" : "Descending"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[400px]">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Cow</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("cow_name")}
+                >
+                  Cow
+                  {sortBy === "cow_name" && (
+                    <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                  )}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("record_date")}
+                >
+                  Date
+                  {sortBy === "record_date" && (
+                    <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                  )}
+                </TableHead>
                 <TableHead>Vaccine</TableHead>
-                <TableHead>Milk Output</TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("milk_output")}
+                >
+                  Milk Output
+                  {sortBy === "milk_output" && (
+                    <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                  )}
+                </TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {feedRecords.map((record) => (
+              {filteredAndSortedRecords.map((record) => (
                 <TableRow key={record.id}>
                   <TableCell className="font-medium">{getCowName(record.cow_id)}</TableCell>
                   <TableCell>{new Date(record.record_date).toLocaleDateString()}</TableCell>
