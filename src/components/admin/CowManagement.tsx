@@ -58,7 +58,7 @@ export const CowManagement = () => {
     name: "",
     gender: "",
     age: "",
-    lactation: false,
+    //lactation: false,
     lactationday: "",
     mother: "",
     father: "",
@@ -95,7 +95,7 @@ export const CowManagement = () => {
       name: formData.name,
       gender: formData.gender || null,
       age: formData.age ? parseInt(formData.age) : null,
-      lactation: formData.lactation,
+    //  lactation: formData.lactation,
       lactationday: formData.lactationday || "",
       mother: formData.mother || null,
       father: formData.father || null,
@@ -146,7 +146,7 @@ export const CowManagement = () => {
       name: "",
       gender: "",
       age: "",
-      lactation: false,
+  //    lactation: false,
       lactationday: "",
       mother: "",
       father: "",
@@ -161,7 +161,7 @@ export const CowManagement = () => {
       name: cow.name,
       gender: cow.gender || "",
       age: cow.age?.toString() || "",
-      lactation: cow.lactation,
+    //  lactation: cow.lactation,
       lactationday: cow.lactationday || "",
       mother: cow.mother || "",
       father: cow.father || "",
@@ -249,16 +249,7 @@ export const CowManagement = () => {
                     />
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="lactation"
-                    checked={formData.lactation}
-                    onCheckedChange={(checked) =>
-                      setFormData({ ...formData, lactation: checked })
-                    }
-                  />
-                  <Label htmlFor="lactation">Lactating</Label>
-                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="mother">Mother</Label>
@@ -271,7 +262,7 @@ export const CowManagement = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="lactationday">LactationDay</Label>
+                    <Label htmlFor="lactationday">Lactation</Label>
                     <Input
                       id="lactationday"
                       value={formData.lactationday}
@@ -329,8 +320,7 @@ export const CowManagement = () => {
               <TableHead>Name</TableHead>
               <TableHead>Gender</TableHead>
               <TableHead>Age (months)</TableHead>
-              <TableHead>Lactating</TableHead>
-              <TableHead>LactationDay</TableHead>
+              <TableHead>Lactation</TableHead>
               <TableHead>Origin</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -341,7 +331,7 @@ export const CowManagement = () => {
                 <TableCell className="font-medium">{cow.name}</TableCell>
                 <TableCell>{cow.gender || "N/A"}</TableCell>
                 <TableCell>{cow.age || "N/A"}</TableCell>
-                <TableCell>{cow.lactation ? "Yes" : "No"}</TableCell>
+               
                 <TableCell>{cow.lactationday || "N/A"}</TableCell>
                 <TableCell>{cow.origine || "N/A"}</TableCell>
                 <TableCell>
@@ -416,18 +406,9 @@ export const CowManagement = () => {
                   />
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="edit-lactation"
-                  checked={formData.lactation}
-                  onCheckedChange={(checked) =>
-                    setFormData({ ...formData, lactation: checked })
-                  }
-                />
-                <Label htmlFor="edit-lactation">Lactating</Label>
-              </div>
+
               <div>
-                <Label htmlFor="edit-mother">LactationDay</Label>
+                <Label htmlFor="edit-mother">Lactation</Label>
                 <Input
                   id="edit-mother"
                   value={formData.lactationday}
