@@ -34,8 +34,10 @@ interface Order {
   status: string;
   item: string;
   quantity: number;
-  customer_geopin: string;
-  customer_address: string;
+  customers: {
+    address: string;
+    geopin: string;
+  } | null;
 }
 
 export default function DeliveryPortal() {
@@ -54,7 +56,13 @@ export default function DeliveryPortal() {
     try {
       const { data, error } = await supabase
         .from("orders")
-        .select("*")
+        .select(`
+          *,
+          customers (
+            address,
+            geopin
+          )
+        `)
         .eq("order_date", today)
         .order("created_at", { ascending: false });
 
@@ -279,8 +287,8 @@ export default function DeliveryPortal() {
                         </TableCell>
                         <TableCell>{order.item}</TableCell>
                         <TableCell>{order.quantity}</TableCell>
-                        <TableCell>{order.customer_geopin}</TableCell>
-                        <TableCell>{order.customer_address}</TableCell>
+                        <TableCell>{order.customers?.address || "N/A"}</TableCell>
+                        <TableCell>{order.customers?.geopin || "N/A"}</TableCell>
                         <TableCell>
                           <Badge variant={getStatusBadgeVariant(order.status)}>
                             <span className={getStatusColor(order.status)}>
