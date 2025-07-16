@@ -86,6 +86,7 @@ export type Database = {
           area: string | null
           contact_number: string | null
           created_at: string | null
+          delivery_agent: string | null
           geopin: string | null
           id: string
           name: string
@@ -98,6 +99,7 @@ export type Database = {
           area?: string | null
           contact_number?: string | null
           created_at?: string | null
+          delivery_agent?: string | null
           geopin?: string | null
           id?: string
           name: string
@@ -110,6 +112,7 @@ export type Database = {
           area?: string | null
           contact_number?: string | null
           created_at?: string | null
+          delivery_agent?: string | null
           geopin?: string | null
           id?: string
           name?: string

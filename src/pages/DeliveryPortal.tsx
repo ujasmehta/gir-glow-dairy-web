@@ -26,6 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { Truck, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Order {
   id: string;
@@ -37,6 +38,7 @@ interface Order {
   customers: {
     address: string;
     geopin: string;
+    delivery_agent: string | null;
   } | null;
 }
 
@@ -45,25 +47,32 @@ export default function DeliveryPortal() {
   const [loading, setLoading] = useState(true);
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
-    fetchTodaysOrders();
-  }, []);
+    if (user?.email) {
+      fetchTodaysOrders();
+    }
+  }, [user?.email]);
 
   const fetchTodaysOrders = async () => {
+    if (!user?.email) return;
+    
     try {
       const { data, error } = await supabase
         .from("orders")
         .select(`
           *,
-          customers (
+          customers!inner (
             address,
-            geopin
+            geopin,
+            delivery_agent
           )
         `)
         .eq("order_date", today)
+        .eq("customers.delivery_agent", user.email)
         .order("created_at", { ascending: false });
 
       if (error) {
