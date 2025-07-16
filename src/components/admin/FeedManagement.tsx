@@ -710,7 +710,7 @@ export const FeedManagement = () => {
                     <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                   )}
                 </TableHead>
-                <TableHead>Vaccine</TableHead>
+                <TableHead>deworming</TableHead>
                 <TableHead>Morning Milk</TableHead>
                 <TableHead>Evening Milk</TableHead>
                 <TableHead 
@@ -730,7 +730,7 @@ export const FeedManagement = () => {
                 <TableRow key={record.id}>
                   <TableCell className="font-medium">{getCowName(record.cow_id)}</TableCell>
                   <TableCell>{new Date(record.record_date).toLocaleDateString()}</TableCell>
-                  <TableCell>{record.vaccine || 'N/A'}</TableCell>
+                  <TableCell>{record.deworming || 'N/A'}</TableCell>
                   <TableCell>{record.milk_output_morning ? `${record.milk_output_morning}L` : 'N/A'}</TableCell>
                   <TableCell>{record.milk_output_evening ? `${record.milk_output_evening}L` : 'N/A'}</TableCell>
                   <TableCell>{getTotalMilkOutput(record)}L</TableCell>
