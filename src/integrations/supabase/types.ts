@@ -35,6 +35,7 @@ export type Database = {
       cows: {
         Row: {
           age: number | null
+          birthdate: string | null
           comments: string | null
           created_at: string | null
           father: string | null
@@ -49,6 +50,7 @@ export type Database = {
         }
         Insert: {
           age?: number | null
+          birthdate?: string | null
           comments?: string | null
           created_at?: string | null
           father?: string | null
@@ -63,6 +65,7 @@ export type Database = {
         }
         Update: {
           age?: number | null
+          birthdate?: string | null
           comments?: string | null
           created_at?: string | null
           father?: string | null
@@ -136,6 +139,8 @@ export type Database = {
           makai_khod: number | null
           medical_note: string | null
           milk_output: number | null
+          milk_output_evening: number | null
+          milk_output_morning: number | null
           readymade_feed: number | null
           record_date: string | null
           saileg: number | null
@@ -164,6 +169,8 @@ export type Database = {
           makai_khod?: number | null
           medical_note?: string | null
           milk_output?: number | null
+          milk_output_evening?: number | null
+          milk_output_morning?: number | null
           readymade_feed?: number | null
           record_date?: string | null
           saileg?: number | null
@@ -192,6 +199,8 @@ export type Database = {
           makai_khod?: number | null
           medical_note?: string | null
           milk_output?: number | null
+          milk_output_evening?: number | null
+          milk_output_morning?: number | null
           readymade_feed?: number | null
           record_date?: string | null
           saileg?: number | null
