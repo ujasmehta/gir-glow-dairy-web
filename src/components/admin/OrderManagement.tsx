@@ -18,16 +18,25 @@ interface Order {
   status: string;
   item: string;
   quantity: number;
+  delivery_agent: string | null;
+}
+
+interface Customer {
+  id: string;
+  name: string;
+  delivery_agent: string | null;
 }
 
 export const OrderManagement = () => {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"customer_name" | "order_date" | "status">("order_date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [formData, setFormData] = useState({
+    customer_id: "",
     customer_name: "",
     order_date: "",
     status: "pending",
@@ -38,6 +47,7 @@ export const OrderManagement = () => {
 
   useEffect(() => {
     fetchOrders();
+    fetchCustomers();
   }, []);
 
   const fetchOrders = async () => {
@@ -54,6 +64,23 @@ export const OrderManagement = () => {
       });
     } else {
       setOrders(data || []);
+    }
+  };
+
+  const fetchCustomers = async () => {
+    const { data, error } = await supabase
+      .from('customers')
+      .select('id, name, delivery_agent')
+      .order('name');
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch customers",
+        variant: "destructive",
+      });
+    } else {
+      setCustomers(data || []);
     }
   };
 
@@ -89,12 +116,17 @@ export const OrderManagement = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Get delivery agent from selected customer
+    const selectedCustomer = customers.find(c => c.id === formData.customer_id);
+    
     const orderData = {
+      customer_id: formData.customer_id || null,
       customer_name: formData.customer_name,
       order_date: formData.order_date,
       status: formData.status,
       item: formData.item,
       quantity: parseInt(formData.quantity),
+      delivery_agent: selectedCustomer?.delivery_agent || null,
     };
 
     if (editingOrder) {
@@ -139,6 +171,7 @@ export const OrderManagement = () => {
     }
 
     setFormData({
+      customer_id: "",
       customer_name: "",
       order_date: "",
       status: "pending",
@@ -150,6 +183,7 @@ export const OrderManagement = () => {
   const handleEdit = (order: Order) => {
     setEditingOrder(order);
     setFormData({
+      customer_id: "",
       customer_name: order.customer_name,
       order_date: order.order_date,
       status: order.status,
@@ -213,12 +247,37 @@ export const OrderManagement = () => {
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="customer_name">Customer Name</Label>
+                  <Label htmlFor="customer_select">Select Customer</Label>
+                  <Select 
+                    value={formData.customer_id} 
+                    onValueChange={(value) => {
+                      const customer = customers.find(c => c.id === value);
+                      setFormData({ 
+                        ...formData, 
+                        customer_id: value,
+                        customer_name: customer?.name || ""
+                      });
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a customer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {customers.map((customer) => (
+                        <SelectItem key={customer.id} value={customer.id}>
+                          {customer.name} {customer.delivery_agent && `(${customer.delivery_agent})`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="customer_name">Or Enter Custom Customer Name</Label>
                   <Input
                     id="customer_name"
                     value={formData.customer_name}
                     onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                    required
+                    placeholder="Enter customer name if not in list"
                   />
                 </div>
                 <div>
@@ -333,6 +392,7 @@ export const OrderManagement = () => {
               </TableHead>
               <TableHead>Item</TableHead>
               <TableHead>Quantity</TableHead>
+              <TableHead>Delivery Agent</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -348,6 +408,7 @@ export const OrderManagement = () => {
                 </TableCell>
                 <TableCell>{order.item}</TableCell>
                 <TableCell>{order.quantity}</TableCell>
+                <TableCell>{order.delivery_agent || "Not assigned"}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     <Button

@@ -19,6 +19,7 @@ interface Customer {
   area?: string;
   address?: string;
   geopin?: string;
+  delivery_agent?: string;
 }
 
 export const CustomerManagement = () => {
@@ -32,7 +33,8 @@ export const CustomerManagement = () => {
     contact_number: "",
     area: "",
     address: "",
-    geopin: ""
+    geopin: "",
+    delivery_agent: ""
   });
   const { toast } = useToast();
 
@@ -68,6 +70,7 @@ export const CustomerManagement = () => {
       area: formData.area || null,
       address: formData.address || null,
       geopin: formData.geopin || null,
+      delivery_agent: formData.delivery_agent || null,
     };
 
     if (editingCustomer) {
@@ -118,7 +121,8 @@ export const CustomerManagement = () => {
       contact_number: "",
       area: "",
       address: "",
-      geopin: ""
+      geopin: "",
+      delivery_agent: ""
     });
   };
 
@@ -131,7 +135,8 @@ export const CustomerManagement = () => {
       contact_number: customer.contact_number || "",
       area: customer.area || "",
       address: customer.address || "",
-      geopin: customer.geopin || ""
+      geopin: customer.geopin || "",
+      delivery_agent: customer.delivery_agent || ""
     });
   };
 
@@ -234,6 +239,15 @@ export const CustomerManagement = () => {
                     onChange={(e) => setFormData({ ...formData, geopin: e.target.value })}
                   />
                 </div>
+                <div>
+                  <Label htmlFor="delivery_agent">Delivery Agent</Label>
+                  <Input
+                    id="delivery_agent"
+                    value={formData.delivery_agent}
+                    onChange={(e) => setFormData({ ...formData, delivery_agent: e.target.value })}
+                    placeholder="Email of delivery agent"
+                  />
+                </div>
                 <Button type="submit" className="w-full">Add Customer</Button>
               </form>
             </DialogContent>
@@ -249,6 +263,7 @@ export const CustomerManagement = () => {
               <TableHead>Area</TableHead>
               <TableHead>Address</TableHead>
               <TableHead>Geopin</TableHead>
+              <TableHead>Delivery Agent</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -260,6 +275,7 @@ export const CustomerManagement = () => {
                 <TableCell>{customer.area || '-'}</TableCell>
                 <TableCell>{customer.address || '-'}</TableCell>
                 <TableCell>{customer.geopin || '-'}</TableCell>
+                <TableCell>{customer.delivery_agent || '-'}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     <Button
@@ -347,6 +363,15 @@ export const CustomerManagement = () => {
                   id="edit-geopin"
                   value={formData.geopin}
                   onChange={(e) => setFormData({ ...formData, geopin: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-delivery_agent">Delivery Agent</Label>
+                <Input
+                  id="edit-delivery_agent"
+                  value={formData.delivery_agent}
+                  onChange={(e) => setFormData({ ...formData, delivery_agent: e.target.value })}
+                  placeholder="Email of delivery agent"
                 />
               </div>
               <Button type="submit" className="w-full">Update Customer</Button>
