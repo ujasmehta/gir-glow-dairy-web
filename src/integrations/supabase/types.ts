@@ -122,6 +122,39 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery_agents: {
+        Row: {
+          area: string | null
+          created_at: string
+          email: string
+          id: string
+          is_active: boolean
+          name: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          area?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          is_active?: boolean
+          name: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          area?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       feed_records: {
         Row: {
           bajari_juvar: number | null
@@ -303,6 +336,10 @@ export type Database = {
     }
     Functions: {
       is_authorized_admin: {
+        Args: { user_email: string }
+        Returns: boolean
+      }
+      is_authorized_delivery_agent: {
         Args: { user_email: string }
         Returns: boolean
       }

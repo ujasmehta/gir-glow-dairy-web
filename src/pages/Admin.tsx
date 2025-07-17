@@ -9,12 +9,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Milk, ArrowLeft, Users, ShoppingCart, Utensils, LogOut, User, Calendar } from "lucide-react";
+import { Milk, ArrowLeft, Users, ShoppingCart, Utensils, LogOut, User, Calendar, Truck } from "lucide-react";
 import { CustomerManagement } from "@/components/admin/CustomerManagement";
 import { CowManagement } from "@/components/admin/CowManagement";
 import { OrderManagement } from "@/components/admin/OrderManagement";
 import { FeedManagement } from "@/components/admin/FeedManagement";
 import { WeeklyOrderManagement } from "@/components/admin/WeeklyOrderManagement";
+import DeliveryAgentManagement from "@/components/admin/DeliveryAgentManagement";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -81,7 +82,7 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="customers" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger
               value="customers"
               className="flex items-center space-x-2"
@@ -100,6 +101,10 @@ const Admin = () => {
             <TabsTrigger value="weekly-orders" className="flex items-center space-x-2">
               <Calendar className="h-4 w-4" />
               <span>Weekly Orders</span>
+            </TabsTrigger>
+            <TabsTrigger value="delivery-agents" className="flex items-center space-x-2">
+              <Truck className="h-4 w-4" />
+              <span>Delivery Agents</span>
             </TabsTrigger>
             <TabsTrigger value="feed" className="flex items-center space-x-2">
               <Utensils className="h-4 w-4" />
@@ -121,6 +126,10 @@ const Admin = () => {
 
           <TabsContent value="weekly-orders">
             <WeeklyOrderManagement />
+          </TabsContent>
+
+          <TabsContent value="delivery-agents">
+            <DeliveryAgentManagement />
           </TabsContent>
 
           <TabsContent value="feed">

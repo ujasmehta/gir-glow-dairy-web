@@ -23,10 +23,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Truck, Package } from "lucide-react";
+import { Truck, Package, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { Navigate } from "react-router-dom";
 
 interface Order {
   id: string;
@@ -46,6 +47,8 @@ export default function DeliveryPortal() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -53,9 +56,38 @@ export default function DeliveryPortal() {
 
   useEffect(() => {
     if (user?.email) {
-      fetchTodaysOrders();
+      checkDeliveryAgentAccess();
+    } else {
+      setCheckingAuth(false);
     }
   }, [user?.email]);
+
+  useEffect(() => {
+    if (isAuthorized && user?.email) {
+      fetchTodaysOrders();
+    }
+  }, [isAuthorized, user?.email]);
+
+  const checkDeliveryAgentAccess = async () => {
+    if (!user?.email) return;
+    
+    try {
+      const { data, error } = await supabase
+        .rpc('is_authorized_delivery_agent', { user_email: user.email });
+
+      if (error) {
+        console.error("Error checking delivery agent access:", error);
+        setIsAuthorized(false);
+      } else {
+        setIsAuthorized(data || false);
+      }
+    } catch (error) {
+      console.error("Error checking delivery agent access:", error);
+      setIsAuthorized(false);
+    } finally {
+      setCheckingAuth(false);
+    }
+  };
 
   const fetchTodaysOrders = async () => {
     if (!user?.email) return;
@@ -152,12 +184,39 @@ export default function DeliveryPortal() {
     }
   };
 
-  if (loading) {
+  if (checkingAuth || loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Package className="h-12 w-12 animate-spin text-green-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading today's orders...</p>
+          <p className="text-gray-600">
+            {checkingAuth ? "Checking access..." : "Loading today's orders..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is not logged in, redirect to login
+  if (!user) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  // If user is not authorized as delivery agent, show access denied
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Shield className="h-12 w-12 text-red-600 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            Access Denied
+          </h3>
+          <p className="text-gray-500 mb-4">
+            You are not authorized to access the delivery portal.
+          </p>
+          <p className="text-sm text-gray-400">
+            Please contact an administrator to request delivery agent access.
+          </p>
         </div>
       </div>
     );
