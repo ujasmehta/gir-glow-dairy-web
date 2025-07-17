@@ -200,7 +200,7 @@ const FarmVisit = () => {
                     ))}
                   </ul>
                   <Button className="w-full bg-green-600 hover:bg-green-700">
-                    Book Now
+                    Booking - Coming Soon
                   </Button>
                 </CardContent>
               </Card>
