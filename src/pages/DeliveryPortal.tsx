@@ -197,9 +197,9 @@ export default function DeliveryPortal() {
     );
   }
 
-  // If user is not logged in, redirect to login
+  // If user is not logged in, redirect to delivery login
   if (!user) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/delivery/login" replace />;
   }
 
   // If user is not authorized as delivery agent, show access denied
