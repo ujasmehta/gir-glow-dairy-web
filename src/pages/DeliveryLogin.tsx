@@ -5,78 +5,44 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Truck, Chrome } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { useState } from 'react';
 
 const DeliveryLogin = () => {
   const navigate = useNavigate();
-  const { signInWithGoogle, isLoading, user } = useAuth();
+  const { signInWithGoogle, isLoading, user, isAuthorizedDeliveryAgent } = useAuth();
   const { toast } = useToast();
-  const [isAuthorizedDeliveryAgent, setIsAuthorizedDeliveryAgent] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(false);
 
   useEffect(() => {
-    if (user?.email) {
-      checkDeliveryAgentAccess();
-    }
-  }, [user?.email]);
-
-  const checkDeliveryAgentAccess = async () => {
-    if (!user?.email) return;
-    
-    setCheckingAuth(true);
-    try {
-      const { data, error } = await supabase
-        .rpc('is_authorized_delivery_agent', { user_email: user.email });
-
-      if (error) {
-        console.error("Error checking delivery agent access:", error);
-        setIsAuthorizedDeliveryAgent(false);
-        toast({
-          title: "Access Denied",
-          description: "Your email is not authorized for delivery agent access.",
-          variant: "destructive",
-        });
+    if (!isLoading && user) {
+      if (isAuthorizedDeliveryAgent) {
+        navigate('/delivery');
       } else {
-        setIsAuthorizedDeliveryAgent(data || false);
-        if (data) {
-          navigate('/delivery');
-        } else {
-          toast({
-            title: "Access Denied",
-            description: "Your email is not authorized for delivery agent access.",
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: 'Access Denied',
+          description: 'Your email is not authorized for delivery access.',
+          variant: 'destructive',
+        });
       }
-    } catch (error) {
-      console.error("Error checking delivery agent access:", error);
-      setIsAuthorizedDeliveryAgent(false);
-    } finally {
-      setCheckingAuth(false);
     }
-  };
+  }, [user, isAuthorizedDeliveryAgent, isLoading, navigate, toast]);
 
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle('/delivery');
     } catch (error) {
       toast({
-        title: "Sign In Failed",
-        description: "Failed to sign in with Google. Please try again.",
-        variant: "destructive",
+        title: 'Sign In Failed',
+        description: 'Failed to sign in with Google. Please try again.',
+        variant: 'destructive',
       });
     }
   };
 
-  if (isLoading || checkingAuth) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Truck className="h-12 w-12 text-green-600 mx-auto animate-spin" />
-          <p className="mt-4 text-gray-600">
-            {checkingAuth ? "Checking access..." : "Loading..."}
-          </p>
+          <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -100,8 +66,8 @@ const DeliveryLogin = () => {
           <p className="text-sm text-gray-600 text-center">
             Sign in with your authorized Google account to access the delivery portal.
           </p>
-          
-          <Button 
+
+          <Button
             onClick={handleGoogleSignIn}
             className="w-full flex items-center justify-center space-x-2"
             size="lg"
@@ -109,7 +75,6 @@ const DeliveryLogin = () => {
             <Chrome className="h-5 w-5" />
             <span>Continue with Google</span>
           </Button>
-          
           <div className="text-xs text-gray-500 text-center">
             Only authorized delivery agent email addresses can access this portal.
           </div>
