@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,6 +7,7 @@ interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
   isAuthorizedAdmin: boolean;
+  isAuthorizedDeliveryAgent: boolean;
   signInWithGoogle: (redirectPath?: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -27,42 +27,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthorizedAdmin, setIsAuthorizedAdmin] = useState(false);
+  const [isAuthorizedDeliveryAgent, setIsAuthorizedDeliveryAgent] = useState(false);
 
   useEffect(() => {
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
+        const user = session?.user ?? null;
         setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user?.email) {
-          // Check if user is authorized admin
-          setTimeout(async () => {
-            try {
-              const { data: isAuthorized } = await supabase.rpc('is_authorized_admin', {
-                user_email: session.user.email
-              });
-              console.log('Is authorized admin:', isAuthorized);
-              setIsAuthorizedAdmin(!!isAuthorized);
-            } catch (error) {
-              console.error('Error checking admin authorization:', error);
-              setIsAuthorizedAdmin(false);
-            }
-          }, 0);
+        setUser(user);
+
+        if (user?.email) {
+          // Check roles
+          await checkAuthorization(user.email);
         } else {
           setIsAuthorizedAdmin(false);
+          setIsAuthorizedDeliveryAgent(false);
         }
-        
+
         setIsLoading(false);
       }
     );
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check existing session on mount
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      const user = session?.user ?? null;
       setSession(session);
-      setUser(session?.user ?? null);
-      if (!session) {
+      setUser(user);
+
+      if (user?.email) {
+        await checkAuthorization(user.email);
+      } else {
         setIsLoading(false);
       }
     });
@@ -70,16 +65,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, []);
 
-  const signInWithGoogle = async (redirectPath = '/admin') => {
+  const checkAuthorization = async (email: string) => {
+    try {
+      const { data: isAdmin } = await supabase.rpc('is_authorized_admin', { user_email: email });
+      const { data: isAgent } = await supabase.rpc('is_authorized_delivery_agent', { user_email: email });
+
+      console.log('isAdmin:', isAdmin, '| isDeliveryAgent:', isAgent);
+      setIsAuthorizedAdmin(!!isAdmin);
+      setIsAuthorizedDeliveryAgent(!!isAgent);
+    } catch (error) {
+      console.error('Error checking authorizations:', error);
+      setIsAuthorizedAdmin(false);
+      setIsAuthorizedDeliveryAgent(false);
+    }
+  };
+
+  const signInWithGoogle = async (redirectPath = '/') => {
     const redirectUrl = `${window.location.origin}${redirectPath}`;
-    
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: redirectUrl
-      }
+        redirectTo: redirectUrl,
+      },
     });
-    
+
     if (error) {
       console.error('Error signing in with Google:', error);
       throw error;
@@ -93,6 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw error;
     }
     setIsAuthorizedAdmin(false);
+    setIsAuthorizedDeliveryAgent(false);
   };
 
   const value = {
@@ -100,6 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     session,
     isLoading,
     isAuthorizedAdmin,
+    isAuthorizedDeliveryAgent,
     signInWithGoogle,
     signOut,
   };
