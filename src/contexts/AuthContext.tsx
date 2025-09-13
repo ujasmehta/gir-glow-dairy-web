@@ -44,10 +44,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (user?.email) {
         // Check roles
         await checkAuthorization(user.email);
+        console.log("Auth state changed:", event, session?.user?.email);
       } else {
         setIsAuthorizedAdmin(
           user?.role === "authenticated" || user?.role === "admin"
         );
+        console.log("Auth state changed:", event, session?.user?.email);
         setIsAuthorizedDeliveryAgent(
           user?.role === "authenticated" || user?.role === "admin"
         );
