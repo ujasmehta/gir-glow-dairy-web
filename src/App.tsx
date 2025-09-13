@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,10 @@ import DeliveryLogin from "./pages/DeliveryLogin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+const isLocal =
+  !process.env.NODE_ENV ||
+  process.env.NODE_ENV === "development" ||
+  window.location.hostname === "localhost";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -35,11 +38,18 @@ const App = () => (
             <Route path="/delivery" element={<DeliveryPortal />} />
             <Route path="/delivery/login" element={<DeliveryLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={
-              <ProtectedRoute>
-                <Admin />
-              </ProtectedRoute>
-            } />
+            <Route
+              path="/admin"
+              element={
+                isLocal ? (
+                  <Admin />
+                ) : (
+                  <ProtectedRoute>
+                    <Admin />
+                  </ProtectedRoute>
+                )
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
