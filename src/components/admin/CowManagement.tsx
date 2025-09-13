@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
@@ -48,6 +47,7 @@ interface Cow {
   father: string | null;
   origine: string | null;
   comments: string | null;
+  birthdate: string | null;
 }
 
 export const CowManagement = () => {
@@ -58,12 +58,12 @@ export const CowManagement = () => {
     name: "",
     gender: "",
     age: "",
-    //lactation: false,
     lactationday: "",
     mother: "",
     father: "",
     origine: "",
     comments: "",
+    birthdate: "",
   });
   const { toast } = useToast();
 
@@ -95,12 +95,12 @@ export const CowManagement = () => {
       name: formData.name,
       gender: formData.gender || null,
       age: formData.age ? parseInt(formData.age) : null,
-    //  lactation: formData.lactation,
       lactationday: formData.lactationday || "",
       mother: formData.mother || null,
       father: formData.father || null,
       origine: formData.origine || null,
       comments: formData.comments || null,
+      birthdate: formData.birthdate || null,
     };
 
     if (editingCow) {
@@ -146,12 +146,12 @@ export const CowManagement = () => {
       name: "",
       gender: "",
       age: "",
-  //    lactation: false,
       lactationday: "",
       mother: "",
       father: "",
       origine: "",
       comments: "",
+      birthdate: "",
     });
   };
 
@@ -161,12 +161,12 @@ export const CowManagement = () => {
       name: cow.name,
       gender: cow.gender || "",
       age: cow.age?.toString() || "",
-    //  lactation: cow.lactation,
       lactationday: cow.lactationday || "",
       mother: cow.mother || "",
       father: cow.father || "",
       origine: cow.origine || "",
       comments: cow.comments || "",
+      birthdate: cow.birthdate || "",
     });
   };
 
@@ -286,6 +286,17 @@ export const CowManagement = () => {
                   </div>
                 </div>
                 <div>
+                  <Label htmlFor="birthdate">Birth Date</Label>
+                  <Input
+                    id="birthdate"
+                    type="date"
+                    value={formData.birthdate}
+                    onChange={(e) =>
+                      setFormData({ ...formData, birthdate: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
                   <Label htmlFor="origine">Origin</Label>
                   <Input
                     id="origine"
@@ -321,6 +332,7 @@ export const CowManagement = () => {
               <TableHead>Gender</TableHead>
               <TableHead>Age (months)</TableHead>
               <TableHead>Lactation</TableHead>
+              <TableHead>Birth Date</TableHead>
               <TableHead>Origin</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -331,8 +343,12 @@ export const CowManagement = () => {
                 <TableCell className="font-medium">{cow.name}</TableCell>
                 <TableCell>{cow.gender || "N/A"}</TableCell>
                 <TableCell>{cow.age || "N/A"}</TableCell>
-               
                 <TableCell>{cow.lactationday || "N/A"}</TableCell>
+                <TableCell>
+                  {cow.birthdate
+                    ? new Date(cow.birthdate).toLocaleDateString()
+                    : "N/A"}
+                </TableCell>
                 <TableCell>{cow.origine || "N/A"}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
@@ -408,9 +424,9 @@ export const CowManagement = () => {
               </div>
 
               <div>
-                <Label htmlFor="edit-mother">Lactation</Label>
+                <Label htmlFor="edit-lactation">Lactation</Label>
                 <Input
-                  id="edit-mother"
+                  id="edit-lactation"
                   value={formData.lactationday}
                   onChange={(e) =>
                     setFormData({ ...formData, lactationday: e.target.value })
@@ -438,6 +454,17 @@ export const CowManagement = () => {
                     }
                   />
                 </div>
+              </div>
+              <div>
+                <Label htmlFor="edit-birthdate">Birth Date</Label>
+                <Input
+                  id="edit-birthdate"
+                  type="date"
+                  value={formData.birthdate}
+                  onChange={(e) =>
+                    setFormData({ ...formData, birthdate: e.target.value })
+                  }
+                />
               </div>
               <div>
                 <Label htmlFor="edit-origine">Origin</Label>
