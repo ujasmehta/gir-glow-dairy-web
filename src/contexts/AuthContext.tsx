@@ -68,6 +68,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => subscription.unsubscribe();
   }, []);
 
+  // In AuthContext.tsx
   const checkAuthorization = async (email: string) => {
     try {
       console.log("Calling is_authorized_admin for", email);
@@ -77,23 +78,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           user_email: email,
         }
       );
-      if (adminError) console.error("Admin RPC error:", adminError);
-      console.log("is_authorized_admin result:", isAdmin);
-
-      const { data: isAgent, error: agentError } = await supabase.rpc(
-        "is_authorized_delivery_agent",
-        { user_email: email }
-      );
-      if (agentError) console.error("Agent RPC error:", agentError);
-      console.log("is_authorized_delivery_agent result:", isAgent);
+      console.log("is_authorized_admin result:", isAdmin, "error:", adminError);
 
       setIsAuthorizedAdmin(!!isAdmin);
-      setIsAuthorizedDeliveryAgent(!!isAgent);
     } catch (error) {
       console.error("Error checking authorizations:", error);
       setIsAuthorizedAdmin(false);
-      setIsAuthorizedDeliveryAgent(false);
     } finally {
+      console.log("checkAuthorization finally block reached");
       setIsLoading(false);
     }
   };
