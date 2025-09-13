@@ -11,7 +11,14 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
+// 1. List of allowed admin emails
+const ALLOWED_ADMIN_EMAILS = [
+  "apmstudio12@gmail.com",
+  "ujasmehta@gmail.com",
+  "ramdairyfarm25@gmail.com",
+  "mitdesai4703@gmail.com",
+  // Add more allowed emails here
+];
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
@@ -20,7 +27,7 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+/* export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -76,4 +83,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}; */
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 2. Helper to check if user is allowed
+  const isAdminEmail = (email: string | undefined | null) =>
+    !!email && ALLOWED_ADMIN_EMAILS.includes(email);
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const user = session?.user ?? null;
+      setSession(session);
+      setUser(user);
+      setIsLoading(false);
+
+      // 3. If on /admin, check if user is allowed
+      if (window.location.pathname.startsWith("/admin")) {
+        if (user && !isAdminEmail(user.email)) {
+          alert("You are not authorized to access the admin portal.");
+          await supabase.auth.signOut();
+          window.location.href = "/";
+        }
+      }
+    });
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      const user = session?.user ?? null;
+      setSession(session);
+      setUser(user);
+      setIsLoading(false);
+
+      if (window.location.pathname.startsWith("/admin")) {
+        if (user && !isAdminEmail(user.email)) {
+          alert("You are not authorized to access the admin portal.");
+          await supabase.auth.signOut();
+          window.location.href = "/";
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 };
