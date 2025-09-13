@@ -42,75 +42,76 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-           <div className="flex items-center space-x-2">
- <img
-  src="/RAMDAIRY_LOGO_white.png"
-  alt="Ram Dairy Farm Logo"
-  className="h-18 w-40 filter invert sepia saturate-500 hue-rotate-90"
-/>
+    
+    <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-between h-24 relative">
 
-</div>
+      
+      <div className="hidden md:flex flex-1"></div>
 
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex space-x-8">
+     
+      <div className="absolute left-1/2 transform -translate-x-1/2">
+        <img
+          src="/RAMDAIRY_LOGO_white.png"
+          alt="Ram Dairy Farm Logo"
+          className="h-24 w-auto filter invert sepia saturate-500 hue-rotate-90"
+        />
+      </div>
+
+      
+      <div className="hidden md:flex flex-1 justify-end space-x-8">
+        {navigationLinks.map((link) => (
+          <Link
+            key={link.to}
+            to={link.to}
+            className={`font-medium ${link.to === "/" ? "text-green-600" : "text-gray-700 hover:text-green-600"}`}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </div>
+
+     
+      <div className="md:hidden ml-auto">
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-green-600">
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-64">
+            <SheetHeader>
+              <SheetTitle className="flex items-center space-x-2 text-green-800">
+                <Milk className="h-6 w-6 text-green-600" />
+                <span>Ram Dairy Farm</span>
+              </SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col space-y-4 mt-8">
               {navigationLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`font-medium ${
-                    link.to === "/"
-                      ? "text-green-600"
-                      : "text-gray-700 hover:text-green-600"
+                  className={`text-left px-4 py-2 rounded-md font-medium transition-colors ${
+                    link.to === "/" ? "bg-green-100 text-green-600" : "text-gray-700 hover:bg-green-50 hover:text-green-600"
                   }`}
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
                 </Link>
               ))}
             </div>
+          </SheetContent>
+        </Sheet>
+      </div>
 
-            {/* Mobile Menu */}
-            <div className="md:hidden">
-              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-green-600">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-64">
-                  <SheetHeader>
-                    <SheetTitle className="flex items-center space-x-2 text-green-800">
-                      <Milk className="h-6 w-6 text-green-600" />
-                      <span>Ram Dairy Farm</span>
-                    </SheetTitle>
-                  </SheetHeader>
-                  <div className="flex flex-col space-y-4 mt-8">
-                    {navigationLinks.map((link) => (
-                      <Link
-                        key={link.to}
-                        to={link.to}
-                        className={`text-left px-4 py-2 rounded-md font-medium transition-colors ${
-                          link.to === "/"
-                            ? "bg-green-100 text-green-600"
-                            : "text-gray-700 hover:bg-green-50 hover:text-green-600"
-                        }`}
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
-          </div>
-        </div>
-      </nav>
+    </div>
+  </div>
+</nav>
+
+
+
 
       {/* Hero Banner Carousel */}
       <HeroBanner />
