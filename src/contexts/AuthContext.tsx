@@ -89,6 +89,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Error checking authorizations:", error);
       setIsAuthorizedAdmin(false);
       setIsAuthorizedDeliveryAgent(false);
+    } finally {
+      setIsLoading(false); // <-- Always set loading to false
     }
   };
 
