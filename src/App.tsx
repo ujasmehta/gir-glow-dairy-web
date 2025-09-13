@@ -44,9 +44,10 @@ const App = () => (
                 isLocal ? (
                   <Admin />
                 ) : (
-                  <ProtectedRoute>
+                  <Admin />
+                  {/* <ProtectedRoute>
                     <Admin />
-                  </ProtectedRoute>
+                  </ProtectedRoute> */}
                 )
               }
             />
