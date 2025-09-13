@@ -1,8 +1,7 @@
-
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Milk } from 'lucide-react';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Milk } from "lucide-react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -10,7 +9,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, isAuthorizedAdmin, isLoading } = useAuth();
-
+  console.log("ProtectedRoute:", { user, isAuthorizedAdmin, isLoading });
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">

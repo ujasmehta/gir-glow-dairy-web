@@ -41,14 +41,9 @@ const App = () => (
             <Route
               path="/admin"
               element={
-                isLocal ? (
+                <ProtectedRoute>
                   <Admin />
-                ) : (
-                  <Admin />
-                  {/* <ProtectedRoute>
-                    <Admin />
-                  </ProtectedRoute> */}
-                )
+                </ProtectedRoute>
               }
             />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
