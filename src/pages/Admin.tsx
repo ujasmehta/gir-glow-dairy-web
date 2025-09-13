@@ -47,10 +47,11 @@ const Admin = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <Link to="/" className="flex items-center space-x-2">
-                <Milk className="h-8 w-8 text-green-600" />
-                <span className="text-2xl font-bold text-green-800">
-                  Ram Dairy Farm
-                </span>
+                <img
+  src="/RAMDAIRY_LOGO_white.png"
+  alt="Ram Dairy Farm Logo"
+  className="h-18 w-40 filter invert sepia saturate-500 hue-rotate-90"
+/>
               </Link>
             </div>
             <div className="flex items-center space-x-4">

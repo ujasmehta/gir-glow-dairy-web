@@ -12,6 +12,29 @@ import { Plus, Edit, Trash2, Search, ArrowUpDown, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+
+
+const formatDate = (dateString?: string | null) => {
+  if (!dateString) return "N/A";
+  const d = new Date(dateString);
+  if (isNaN(d.getTime())) return "N/A";
+  return d.toLocaleDateString("en-GB"); 
+};
+
+const toOneDecimal = (v: string | number | null | undefined): number | null => {
+  if (v === null || v === undefined || v === "") return null;
+  const num = typeof v === "string" ? parseFloat(v) : v;
+  if (Number.isNaN(num)) return null;
+  return Math.round(num * 10) / 10; 
+};
+
+const formatMilkDisplay = (v: number | null | undefined) => {
+  if (v === null || v === undefined) return "N/A";
+  return `${(Math.round(v * 10) / 10).toFixed(1)}L`;
+};
+// -------------------------
+
+
 interface FeedRecord {
   id: string;
   cow_id: string | null;
@@ -184,6 +207,8 @@ export const FeedManagement = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const morning = toOneDecimal(formData.milk_output_morning);
+    const evening = toOneDecimal(formData.milk_output_evening);
     
     const recordData = {
       cow_id: formData.cow_id || null,
@@ -207,9 +232,14 @@ export const FeedManagement = () => {
       kapas_khod: formData.kapas_khod ? parseFloat(formData.kapas_khod) : null,
       makai_khod: formData.makai_khod ? parseFloat(formData.makai_khod) : null,
       readymade_feed: formData.readymade_feed ? parseFloat(formData.readymade_feed) : null,
-      milk_output_morning: formData.milk_output_morning ? parseFloat(formData.milk_output_morning) : null,
-      milk_output_evening: formData.milk_output_evening ? parseFloat(formData.milk_output_evening) : null,
-      record_date: formData.record_date,
+      milk_output_morning: morning,
+  milk_output_evening: evening,
+  milk_output:
+    morning !== null || evening !== null
+      ? toOneDecimal((morning || 0) + (evening || 0))
+      : null,
+
+  record_date: formData.record_date,
     };
 
     if (editingRecord) {
@@ -309,8 +339,9 @@ export const FeedManagement = () => {
       kapas_khod: record.kapas_khod?.toString() || "",
       makai_khod: record.makai_khod?.toString() || "",
       readymade_feed: record.readymade_feed?.toString() || "",
-      milk_output_morning: record.milk_output_morning?.toString() || "",
-      milk_output_evening: record.milk_output_evening?.toString() || "",
+     milk_output_morning: record.milk_output_morning != null ? record.milk_output_morning.toFixed(1) : "",
+milk_output_evening: record.milk_output_evening != null ? record.milk_output_evening.toFixed(1) : "",
+
       record_date: record.record_date
     });
   };
@@ -342,11 +373,13 @@ export const FeedManagement = () => {
     return cow ? cow.name : 'Unknown';
   };
 
-  const getTotalMilkOutput = (record: FeedRecord) => {
-    const morning = record.milk_output_morning || 0;
-    const evening = record.milk_output_evening || 0;
-    return morning + evening;
-  };
+ const getTotalMilkOutput = (record: FeedRecord) => {
+  const morning = record.milk_output_morning ?? 0;
+  const evening = record.milk_output_evening ?? 0;
+  const total = Math.round((morning + evening) * 10) / 10;
+  return Number.isFinite(total) ? total : 0;
+};
+
 
   const renderFormFields = (isEdit = false) => (
     <>
@@ -729,11 +762,22 @@ export const FeedManagement = () => {
               {filteredAndSortedRecords.map((record) => (
                 <TableRow key={record.id}>
                   <TableCell className="font-medium">{getCowName(record.cow_id)}</TableCell>
-                  <TableCell>{new Date(record.record_date).toLocaleDateString()}</TableCell>
+                  <TableCell>{formatDate(record.record_date)}</TableCell>
+
                   <TableCell>{record.deworming || 'N/A'}</TableCell>
-                  <TableCell>{record.milk_output_morning ? `${record.milk_output_morning}L` : 'N/A'}</TableCell>
-                  <TableCell>{record.milk_output_evening ? `${record.milk_output_evening}L` : 'N/A'}</TableCell>
-                  <TableCell>{getTotalMilkOutput(record)}L</TableCell>
+                 <TableCell>{formatMilkDisplay(record.milk_output_morning)}</TableCell>
+<TableCell>{formatMilkDisplay(record.milk_output_evening)}</TableCell>
+<TableCell>
+  {record.milk_output != null
+    ? `${(Math.round((record.milk_output) * 10) / 10).toFixed(1)}L`
+    : 
+    (record.milk_output_morning == null && record.milk_output_evening == null
+      ? "N/A"
+      : `${(Math.round(((record.milk_output_morning || 0) + (record.milk_output_evening || 0)) * 10) / 10).toFixed(1)}L`
+    )
+  }
+</TableCell>
+
                   <TableCell>
                     <div className="flex space-x-2">
                       <Button

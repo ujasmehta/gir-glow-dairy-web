@@ -46,12 +46,15 @@ const Index = () => {
       <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <Milk className="h-8 w-8 text-green-600" />
-              <span className="text-2xl font-bold text-green-800">
-                Ram Dairy Farm
-              </span>
-            </div>
+           <div className="flex items-center space-x-2">
+ <img
+  src="/RAMDAIRY_LOGO_white.png"
+  alt="Ram Dairy Farm Logo"
+  className="h-18 w-40 filter invert sepia saturate-500 hue-rotate-90"
+/>
+
+</div>
+
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8">

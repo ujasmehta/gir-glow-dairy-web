@@ -52,7 +52,11 @@ const AdminLogin = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Milk className="h-12 w-12 text-green-600" />
+            <img
+  src="/RAMDAIRY_LOGO_white.png"
+  alt="Ram Dairy Farm Logo"
+  className="h-18 w-40 filter invert sepia saturate-500 hue-rotate-90"
+/>
           </div>
           <CardTitle className="text-2xl font-bold text-green-800">
             Ram Dairy Farm
