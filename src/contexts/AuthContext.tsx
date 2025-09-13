@@ -42,20 +42,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(user);
 
       if (user?.email) {
-        // Check roles
         await checkAuthorization(user.email);
-        console.log("Auth state changed:", event, session?.user?.email);
       } else {
-        setIsAuthorizedAdmin(
-          user?.role === "authenticated" || user?.role === "admin"
-        );
-        console.log("Auth state changed:", event, session?.user?.email);
-        setIsAuthorizedDeliveryAgent(
-          user?.role === "authenticated" || user?.role === "admin"
-        );
+        setIsAuthorizedAdmin(false);
+        setIsAuthorizedDeliveryAgent(false);
+        setIsLoading(false); // Only here if no user
       }
-
-      setIsLoading(false);
     });
 
     // Check existing session on mount
@@ -67,7 +59,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (user?.email) {
         await checkAuthorization(user.email);
       } else {
-        setIsLoading(false);
+        setIsAuthorizedAdmin(false);
+        setIsAuthorizedDeliveryAgent(false);
+        setIsLoading(false); // Only here if no user
       }
     });
 
