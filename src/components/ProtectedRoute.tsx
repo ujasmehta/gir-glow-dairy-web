@@ -8,8 +8,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user, isAuthorizedAdmin, isLoading } = useAuth();
-  console.log("ProtectedRoute:", { user, isAuthorizedAdmin, isLoading });
+  const { user, isLoading } = useAuth();
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -21,9 +20,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  if (!user || !isAuthorizedAdmin) {
+  if (!user) {
     return <Navigate to="/admin/login" replace />;
   }
+
+  // Log access here as well if you want
+  console.log("Authenticated user accessing admin:", user.email);
 
   return <>{children}</>;
 };

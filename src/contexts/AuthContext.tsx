@@ -6,8 +6,6 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
-  isAuthorizedAdmin: boolean;
-  isAuthorizedDeliveryAgent: boolean;
   signInWithGoogle: (redirectPath?: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -28,100 +26,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthorizedAdmin, setIsAuthorizedAdmin] = useState(false);
-  const [isAuthorizedDeliveryAgent, setIsAuthorizedDeliveryAgent] =
-    useState(false);
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session?.user?.email);
       const user = session?.user ?? null;
       setSession(session);
       setUser(user);
-
-      if (user?.email) {
-        await checkAuthorization(user.email);
-      } else {
-        setIsAuthorizedAdmin(false);
-        setIsAuthorizedDeliveryAgent(false);
-        setIsLoading(false); // Only here if no user
+      setIsLoading(false);
+      if (user) {
+        console.log("Authenticated user accessing admin:", user.email);
       }
     });
 
-    // Check existing session on mount
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       const user = session?.user ?? null;
       setSession(session);
       setUser(user);
-
-      if (user?.email) {
-        await checkAuthorization(user.email);
-      } else {
-        setIsAuthorizedAdmin(false);
-        setIsAuthorizedDeliveryAgent(false);
-        setIsLoading(false); // Only here if no user
+      setIsLoading(false);
+      if (user) {
+        console.log("Authenticated user accessing admin:", user.email);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  // In AuthContext.tsx
-  const checkAuthorization = async (email: string) => {
-    try {
-      console.log("Calling is_authorized_admin for", email);
-      const { data: isAdmin, error: adminError } = await supabase.rpc(
-        "is_authorized_admin",
-        {
-          user_email: email,
-        }
-      );
-      console.log("is_authorized_admin result:", isAdmin, "error:", adminError);
-
-      setIsAuthorizedAdmin(!!isAdmin);
-    } catch (error) {
-      console.error("Error checking authorizations:", error);
-      setIsAuthorizedAdmin(false);
-    } finally {
-      console.log("checkAuthorization finally block reached");
-      setIsLoading(false);
-    }
-  };
-
   const signInWithGoogle = async (redirectPath = "/") => {
     const redirectUrl = `${window.location.origin}${redirectPath}`;
-
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: redirectUrl,
-      },
+      options: { redirectTo: redirectUrl },
     });
-
-    if (error) {
-      console.error("Error signing in with Google:", error);
-      throw error;
-    }
+    if (error) throw error;
   };
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Error signing out:", error);
-      throw error;
-    }
-    setIsAuthorizedAdmin(false);
-    setIsAuthorizedDeliveryAgent(false);
+    if (error) throw error;
   };
 
   const value = {
     user,
     session,
     isLoading,
-    isAuthorizedAdmin,
-    isAuthorizedDeliveryAgent,
     signInWithGoogle,
     signOut,
   };
