@@ -70,15 +70,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const checkAuthorization = async (email: string) => {
     try {
-      const { data: isAdmin } = await supabase.rpc("is_authorized_admin", {
-        user_email: email,
-      });
-      const { data: isAgent } = await supabase.rpc(
+      console.log("Calling is_authorized_admin for", email);
+      const { data: isAdmin, error: adminError } = await supabase.rpc(
+        "is_authorized_admin",
+        {
+          user_email: email,
+        }
+      );
+      if (adminError) console.error("Admin RPC error:", adminError);
+      console.log("is_authorized_admin result:", isAdmin);
+
+      const { data: isAgent, error: agentError } = await supabase.rpc(
         "is_authorized_delivery_agent",
         { user_email: email }
       );
+      if (agentError) console.error("Agent RPC error:", agentError);
+      console.log("is_authorized_delivery_agent result:", isAgent);
 
-      console.log("isAdmin:", isAdmin, "| isDeliveryAgent:", isAgent);
       setIsAuthorizedAdmin(!!isAdmin);
       setIsAuthorizedDeliveryAgent(!!isAgent);
     } catch (error) {
@@ -86,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsAuthorizedAdmin(false);
       setIsAuthorizedDeliveryAgent(false);
     } finally {
-      setIsLoading(false); // <-- Always set loading to false
+      setIsLoading(false);
     }
   };
 
